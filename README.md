@@ -1,8 +1,4 @@
-# ☕ Coffee Match — AAA Match-3 Mobil & Web Bulmaca Oyunu
-
-Royal Match & Candy Crush standartlarında tasarlanmış, taze çekilmiş kahve ve tatlı temalı **AAA Match-3 Mobil & Web Bulmaca Oyunu**!
-
----
+# ☕ Coffee Match — Match-3 Mobil & Web Bulmaca Oyunu
 
 ## 🎮 Öne Çıkan Özellikler
 
