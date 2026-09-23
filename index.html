@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Coffee Match ☕ - Barista Match-3 Mobil Oyunu</title>
+  <meta name="description" content="Coffee Match - Büyükbabanın kafe mirasını yenile! 6 Tematik Bölge haritası ve özel mekaniklerle dolu mobil Match-3 macerası.">
+  
+  <!-- Google Fonts: Fredoka & Outfit & Courier Prime for POS thermal receipt UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css?v=290.0">
+</head>
+<body>
+
+  <!-- Background Steam & Particle Overlay -->
+  <div class="bg-gradient"></div>
+  <div class="bg-steam-container" id="bgSteam"></div>
+
+  <!-- Main Mobile Outer Frame -->
+  <div class="mobile-frame">
+    
+    <!-- Top Header Bar (Currencies & Status) -->
+    <header class="top-bar" id="topHeaderBar">
+      <div class="user-avatar" id="btnAccount">
+        <span class="avatar-icon" id="displayAvatar">👨‍🍳</span>
+        <span class="user-name" id="displayUsername">Misafir Barista</span>
+      </div>
+
+      <div class="currency-group">
+        <!-- Coin Currency -->
+        <div class="currency-badge coin-badge" title="Coin Miktarı">
+          <span class="currency-icon">🪙</span>
+          <span class="currency-val" id="valCoin">500</span>
+        </div>
+
+        <!-- Coffee Bean Currency (No stars, Coffee Beans 🫘) -->
+        <div class="currency-badge bean-badge" title="Kahve Çekirdeği">
+          <span class="currency-icon">🫘</span>
+          <span class="currency-val" id="valBeans">0</span>
+        </div>
+
+        <!-- Lives / Energy -->
+        <div class="currency-badge life-badge" title="Can">
+          <span class="currency-icon">❤️</span>
+          <span class="currency-val" id="valLives">5</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 4px; align-items: center;">
+        <button class="icon-btn-small" id="btnLeaderboardToggle" title="Canlı Liderlik Tablosu">🏆</button>
+        <button class="icon-btn-small" id="btnSoundToggle" title="Ses">🔊</button>
+      </div>
+    </header>
+
+    <!-- Content Screen Containers -->
+    <main class="content-area">
+
+      <!-- SCREEN 0: EXQUISITE 3D COFFEE MATCH ENTRANCE SCREEN -->
+      <section class="screen-view active" id="screenSplash">
+        <div class="splash-card-container">
+          <!-- Top Interactive Cup emblem -->
+          <div class="splash-emblem-box" id="btnSplashCup" title="Fincana Dokun! ✨">
+            <div class="emblem-dashed-border">
+              <span class="emblem-donut">🍩</span>
+              <span class="emblem-steam">♨️</span>
+              <span class="emblem-cup">☕</span>
+              <div class="emblem-beans">
+                <span>🫘</span>
+                <span>🫘</span>
+              </div>
+            </div>
+            <span class="emblem-label">Fincana Dokun! ✨</span>
+          </div>
+
+          <!-- Logo & Subtitle -->
+          <div class="splash-title-box">
+            <h1 class="splash-app-title"><span class="t-coffee">Coffee</span> <span class="t-match">Match</span></h1>
+            <p class="splash-subtitle">Barista Match-3 & Kafe Yenileme ☕ 🍩</p>
+          </div>
+
+          <!-- Barista Tip Pill -->
+          <div class="splash-tip-pill" id="splashTipText">
+            💡 İpucu: 4 taş eşleştirip güçlü Çizgili Kahve Bombası oluştur!
+          </div>
+
+          <!-- Progress Bar & Status -->
+          <div class="splash-progress-section">
+            <div class="splash-progress-track">
+              <div class="splash-progress-fill" id="splashProgressFill"></div>
+            </div>
+            <span class="splash-status-text" id="splashStatusText">İpeksi Süt Köpüğü Hazırlanıyor... 🥛</span>
+          </div>
+
+          <!-- Barista Register Action Button -->
+          <button class="btn-splash-auth" id="btnSplashAuth" onclick="window.coffeeMatchApp ? window.coffeeMatchApp.openRegisterModal() : document.getElementById('modalRegister').classList.add('active')">
+            📝 KAYIT OL / GİRİŞ YAP 🔑
+          </button>
+
+          <!-- Enter / Play Button -->
+          <button class="btn-splash-start btn-enter-cafe-gold" id="btnSplashEnter" onclick="window.coffeeMatchApp ? window.coffeeMatchApp.switchScreen('screenHome') : document.getElementById('screenSplash').classList.remove('active')">
+            🏠 ANA SAYFAYA GİRİŞ YAP ✨
+          </button>
+
+          <!-- Footer Engine Version -->
+          <div class="splash-footer-tag">
+            ✨ 3D Barista Match-3 Engine - v1.0
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 1: 🗺️ DÜNYA KAHVE TURU & PASAPORT KOLEKSİYONU -->
+      <section class="screen-view" id="screenCafe">
+        <div class="tour-screen-container">
+          
+          <!-- Top Gold Deluxe Passport Header Card -->
+          <div class="passport-header-card">
+            <div class="passport-title-row">
+              <div class="passport-emboss-gold">👑</div>
+              <div class="passport-title-meta">
+                <h3>VİP DÜNYA KAHVE TURU</h3>
+                <p>Çekirdek 🫘 ile Lüks Havayolu Biletleri Al, İmza Damgaları Topla!</p>
+              </div>
+            </div>
+
+            <div class="passport-stats-bar">
+              <div class="p-stat-item">
+                <span class="p-lbl">🎫 VİP Pasaport Damgası</span>
+                <strong class="p-val" id="tourStampCount">0 / 6</strong>
+              </div>
+              <div class="p-stat-item">
+                <span class="p-lbl">🫘 Bakiye Çekirdek</span>
+                <strong class="p-val" id="tourBeanCount">999</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Destinations Airline Tickets Grid -->
+          <div class="tour-destinations-grid">
+            
+            <!-- 1. Etiyopya (5 Beans) -->
+            <div class="tour-card ticket-stub" data-dest="ethiopia" data-cost="5">
+              <div class="ticket-top-ribbon">FIRST CLASS AIRLINE PASS • 🇪🇹</div>
+              <div class="tour-card-header">
+                <span class="flag-icon">🇪🇹</span>
+                <div class="tour-dest-info">
+                  <h4>Etiyopya • Kaffa Vadisi</h4>
+                  <p>Orijinal Kahvenin Beşiği &amp; Efsanevi Harar Çekirdeği</p>
+                </div>
+                <span class="stamp-badge-status" id="stampEth">🔒 KİLİTLİ</span>
+              </div>
+              <div class="tour-card-body">
+                <div class="tour-reward-info">
+                  🎁 Uçuş Ödülü: <strong>+1,000 🪙 Coin</strong> &amp; <strong>+2 Kahve Bombası 💣</strong>
+                </div>
+                <button class="btn-action-gold btn-travel" data-dest="ethiopia" data-cost="5" onclick="window.coffeeMatchApp ? window.coffeeMatchApp.handleWorldTourTravel('ethiopia', 5) : null">
+                  🎫 VİP BİLET AL (5 🫘)
+                </button>
+              </div>
+            </div>
+
+            <!-- 2. İtalya (10 Beans) -->
+            <div class="tour-card ticket-stub" data-dest="italy" data-cost="10">
+              <div class="ticket-top-ribbon">FIRST CLASS AIRLINE PASS • 🇮🇹</div>
+              <div class="tour-card-header">
+                <span class="flag-icon">🇮🇹</span>
+                <div class="tour-dest-info">
+                  <h4>İtalya • Napoli &amp; Roma</h4>
+                  <p>Klasik Ristretto &amp; Yoğun Kremalı Espresso Başkenti</p>
+                </div>
+                <span class="stamp-badge-status" id="stampIta">🔒 KİLİTLİ</span>
+              </div>
+              <div class="tour-card-body">
+                <div class="tour-reward-info">
+                  🎁 Uçuş Ödülü: <strong>+2,500 🪙 Coin</strong> &amp; <strong>+2 Gökkuşağı Şurubu ⚡</strong>
+                </div>
+                <button class="btn-action-gold btn-travel" data-dest="italy" data-cost="10" onclick="window.coffeeMatchApp ? window.coffeeMatchApp.handleWorldTourTravel('italy', 10) : null">
+                  🎫 VİP BİLET AL (10 🫘)
+                </button>
+              </div>
+            </div>
+
+            <!-- 3. Kolombiya (18 Beans) -->
+            <div class="tour-card ticket-stub" data-dest="colombia" data-cost="18">
+              <div class="ticket-top-ribbon">FIRST CLASS AIRLINE PASS • 🇨🇴</div>
+              <div class="tour-card-header">
+                <span class="flag-icon">🇨🇴</span>
+                <div class="tour-dest-info">
+                  <h4>Kolombiya • Medellin Dağları</h4>
+                  <p>Yüksek İrtifa Gurme Arabica Çekirdeği</p>
+                </div>
+                <span class="stamp-badge-status" id="stampCol">🔒 KİLİTLİ</span>
+              </div>
+              <div class="tour-card-body">
+                <div class="tour-reward-info">
+                  🎁 Uçuş Ödülü: <strong>+5,000 🪙 Coin</strong> &amp; <strong>2 Saat Sınırsız Can ❤️</strong>
+                </div>
+                <button class="btn-action-gold btn-travel" data-dest="colombia" data-cost="18" onclick="window.coffeeMatchApp ? window.coffeeMatchApp.handleWorldTourTravel('colombia', 18) : null">
+                  🎫 VİP BİLET AL (18 🫘)
+                </button>
+              </div>
+            </div>
+
+            <!-- 4. Brezilya (25 Beans) -->
+            <div class="tour-card ticket-stub" data-dest="brazil" data-cost="25">
+              <div class="ticket-top-ribbon">FIRST CLASS AIRLINE PASS • 🇧🇷</div>
+              <div class="tour-card-header">
+                <span class="flag-icon">🇧🇷</span>
+                <div class="tour-dest-info">
+                  <h4>Brezilya • Santos Tarlaları</h4>
+                  <p>Dünya Kahve Üretim Dev Krallığı</p>
+                </div>
+                <span class="stamp-badge-status" id="stampBra">🔒 KİLİTLİ</span>
+              </div>
+              <div class="tour-card-body">
+                <div class="tour-reward-info">
+                  🎁 Uçuş Ödülü: <strong>+8,000 🪙 Coin</strong> &amp; <strong>👨‍🍳 Altın Efsane Barista Avatarı</strong>
+                </div>
+                <button class="btn-action-gold btn-travel" data-dest="brazil" data-cost="25" onclick="window.coffeeMatchApp ? window.coffeeMatchApp.handleWorldTourTravel('brazil', 25) : null">
+                  🎫 VİP BİLET AL (25 🫘)
+                </button>
+              </div>
+            </div>
+
+            <!-- 5. Vietnam (35 Beans) -->
+            <div class="tour-card ticket-stub" data-dest="vietnam" data-cost="35">
+              <div class="ticket-top-ribbon">FIRST CLASS AIRLINE PASS • 🇻🇳</div>
+              <div class="tour-card-header">
+                <span class="flag-icon">🇻🇳</span>
+                <div class="tour-dest-info">
+                  <h4>Vietnam • Hanoi Drip Hub</h4>
+                  <p>Yoğun Fındıklı Robusta &amp; İkonik Yumurta Kahvesi</p>
+                </div>
+                <span class="stamp-badge-status" id="stampVie">🔒 KİLİTLİ</span>
+              </div>
+              <div class="tour-card-body">
+                <div class="tour-reward-info">
+                  🎁 Uçuş Ödülü: <strong>+12,000 🪙 Coin</strong> &amp; <strong>+5 Kahve Bombası 💣</strong>
+                </div>
+                <button class="btn-action-gold btn-travel" data-dest="vietnam" data-cost="35" onclick="window.coffeeMatchApp ? window.coffeeMatchApp.handleWorldTourTravel('vietnam', 35) : null">
+                  🎫 VİP BİLET AL (35 🫘)
+                </button>
+              </div>
+            </div>
+
+            <!-- 6. Jamaika (50 Beans) -->
+            <div class="tour-card ticket-stub" data-dest="jamaica" data-cost="50">
+              <div class="ticket-top-ribbon">ROYAL GOLD AIRLINE PASS • 🇯🇲</div>
+              <div class="tour-card-header">
+                <span class="flag-icon">🇯🇲</span>
+                <div class="tour-dest-info">
+                  <h4>Jamaika • Blue Mountain</h4>
+                  <p>Dünyanın En Nadir &amp; Pahalı Lüks Çekirdeği</p>
+                </div>
+                <span class="stamp-badge-status" id="stampJam">🔒 KİLİTLİ</span>
+              </div>
+              <div class="tour-card-body">
+                <div class="tour-reward-info">
+                  🎁 Uçuş Ödülü: <strong>+25,000 🪙 Coin</strong> &amp; <strong>👑 Altın Kahve İmparatoru Ünvanı</strong>
+                </div>
+                <button class="btn-action-gold btn-travel" data-dest="jamaica" data-cost="50" onclick="window.coffeeMatchApp ? window.coffeeMatchApp.handleWorldTourTravel('jamaica', 50) : null">
+                  🎫 VİP BİLET AL (50 🫘)
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Passport Travel & Stamp Animation Overlay -->
+          <div class="stamp-anim-overlay" id="stampAnimOverlay">
+            <div class="airplane-flying-icon" id="airplaneIcon">✈️</div>
+            <div class="passport-stamp-seal" id="passportStampSeal">
+              <div class="seal-circle">
+                <span class="seal-flag" id="sealFlag">🇪🇹</span>
+                <strong id="sealTitle">ETİYOPYA</strong>
+                <small>PASAPORT DAMGASI ✓</small>
+              </div>
+            </div>
+            <div class="stamp-toast-msg" id="stampToastMsg">
+              🎉 İMZA DAMGA ALINDI! ÖDÜLLER KAZANILDI!
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SCREEN 2: ☕ BÖLGELERE AYRILMIŞ HARİTA SİSTEMİ (CHAPTER MAP) -->
+      <section class="screen-view" id="screenMap">
+        <div class="chapter-wrapper">
+          
+          <!-- Top Chapter Header & Progress Card -->
+          <div class="chapter-header-card">
+            <div class="chapter-title-row">
+              <div class="chapter-cup-badge">☕</div>
+              <div class="chapter-text-box">
+                <h2>Kahve Haritası</h2>
+                <p>Kafeni adım adım büyüt, yeni bölgeleri keşfet!</p>
+              </div>
+            </div>
+
+            <div class="chapter-progress-box">
+              <div class="chapter-progress-labels">
+                <span>Bölge İlerlemesi</span>
+                <strong id="chapterProgressVal">0 / 20 Bölüm</strong>
+              </div>
+              <div class="chapter-bar-bg">
+                <div class="chapter-bar-fill" id="chapterBarFill" style="width: 5%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6 Chapter Regions Navigation Bar -->
+          <div class="chapter-dest-bar" id="chapterDestBar">
+            <button class="chapter-tab active" data-region="1">🇪🇹 1: Etiyopya</button>
+            <button class="chapter-tab" data-region="2">🇮🇹 2: İtalya</button>
+            <button class="chapter-tab" data-region="3">🇨🇴 3: Kolombiya</button>
+            <button class="chapter-tab" data-region="4">🇧🇷 4: Brezilya</button>
+            <button class="chapter-tab" data-region="5">🇻🇳 5: Vietnam</button>
+            <button class="chapter-tab" data-region="6">🇯🇲 6: Jamaika</button>
+          </div>
+
+          <!-- Main Biome Card Container (Scrollable Chapter Canvas) -->
+          <div class="chapter-biome-card" id="chapterBiomeCard">
+            <!-- Biome Top Oval Pill Badge -->
+            <div class="chapter-pill-badge" id="chapterPillBadge">
+              🇪🇹 Bölge 1 — Etiyopya • Harar Vadisi
+            </div>
+            <p class="chapter-biome-desc" id="chapterBiomeDesc">Kahvenin doğduğu topraklar! Orijinal Harar çekirdeklerini topla ve taze demleme seremonisini tamamla.</p>
+
+            <!-- Floating Background Environment Icons -->
+            <div class="env-icon env-wave">☕</div>
+            <div class="env-icon env-flower">🥐</div>
+            <div class="env-icon env-bench">🪑</div>
+            <div class="env-icon env-duck">📚</div>
+            <div class="env-icon env-tulip">🪴</div>
+
+            <!-- Path Canvas & Level Nodes -->
+            <div class="chapter-nodes-area">
+              <svg class="chapter-svg" id="chapterSvg"></svg>
+              <div class="chapter-nodes-container" id="chapterNodesContainer">
+                <!-- 20 Chapter Level Nodes -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SCREEN 3: MATCH-3 OYUN ALANI (Game View) -->
+      <section class="screen-view" id="screenGame">
+        <!-- Level Game Header -->
+        <div class="game-hud">
+          <!-- Left: Order Objectives -->
+          <div class="hud-box order-box">
+            <span class="hud-label">SİPARİŞLER</span>
+            <div class="hud-orders-list" id="hudOrdersList">
+              <!-- Dynamic level goals -->
+            </div>
+          </div>
+
+          <!-- Center: Level Info & Moves -->
+          <div class="hud-box moves-box highlight">
+            <span class="hud-label">HAMLE</span>
+            <span class="hud-value" id="hudMoves">25</span>
+          </div>
+
+          <!-- Right: Score & Level -->
+          <div class="hud-box score-box">
+            <span class="hud-label" id="hudLevelLabel">SEVİYE 1</span>
+            <span class="hud-value" id="hudScore">0</span>
+          </div>
+        </div>
+
+        <!-- Level Obstacle / Mechanic Info Banner -->
+        <div class="mechanic-banner" id="mechanicBanner" onclick="window.testWinPanel && window.testWinPanel()" style="cursor: pointer;" title="Tıkla ve Sipariş Fişi Paneli Test Et">
+          <span class="mechanic-icon" id="mechanicIcon">💡</span>
+          <span class="mechanic-text" id="mechanicText">Hedef kahve siparişlerini tamamlamak için eşleştirme yap!</span>
+        </div>
+
+        <!-- Board Wrapper & FX Canvas -->
+        <div class="board-container">
+          <div class="game-board-grid" id="gameBoardGrid">
+            <!-- 8x8 Dynamic Tiles -->
+          </div>
+
+          <canvas id="fxCanvas" class="fx-canvas"></canvas>
+        </div>
+
+        <!-- Bottom Barista Boosters -->
+        <div class="booster-bar">
+          <button class="booster-btn" id="boostBomb" title="Kahve Bombası (3x3 Patlatma)">
+            <span class="b-icon">💣</span>
+            <span class="b-name">Bomba</span>
+            <span class="b-badge" id="countBomb">2</span>
+          </button>
+          <button class="booster-btn" id="boostSteam" title="Buhar Çubuğu (Satır Temizleyici)">
+            <span class="b-icon">💨</span>
+            <span class="b-name">Buhar</span>
+            <span class="b-badge" id="countSteam">2</span>
+          </button>
+          <button class="booster-btn" id="boostLightning" title="Yıldırım Çekirdeği (Seçilen Rengi Temizler)">
+            <span class="b-icon">⚡</span>
+            <span class="b-name">Yıldırım</span>
+            <span class="b-badge" id="countLightning">2</span>
+          </button>
+          <button class="booster-btn" id="boostShuffle" title="Tahtayı Karıştır">
+            <span class="b-icon">🔀</span>
+            <span class="b-name">Karıştır</span>
+            <span class="b-badge" id="countShuffle">3</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN 4: ⚔️ 1v1 ONLINE BARISTA ARENA & LEADERBOARD SCREEN -->
+      <section class="screen-view" id="screenDuel">
+        <div class="duel-screen-container">
+          <div class="duel-screen-header">
+            <h2 class="duel-app-title">⚔️ Barista Arenası</h2>
+            <p class="duel-sub">60 Saniyelik Canlı Skor Yarışı &amp; Dünya Sıralaması</p>
+          </div>
+
+          <!-- Active Arena Card -->
+          <div class="duel-arena-card">
+            <div class="duel-match-box">
+              <div class="duel-player-card">
+                <span class="d-avatar" id="tabMyAvatar">👩‍🍳</span>
+                <strong class="d-name" id="tabMyName">Tuğçe</strong>
+                <span class="d-badge">Sen</span>
+              </div>
+
+              <div class="duel-vs-badge">VS</div>
+
+              <div class="duel-player-card">
+                <span class="d-avatar">👨‍🍳</span>
+                <strong class="d-name">Barista_Ahmet</strong>
+                <span class="d-badge">Çevrimiçi Rakip</span>
+              </div>
+            </div>
+
+            <div class="duel-info-pill">
+              🏆 Kazanan Ödülü: <strong>+100 🪙 Coin</strong> &amp; <strong>+5 🫘 Çekirdek</strong>
+            </div>
+
+            <button class="btn-action-gold" id="btnTabStartDuel">🚀 1v1 DÜELLOYU BAŞLAT!</button>
+          </div>
+
+          <!-- Embedded Mini Leaderboard Card -->
+          <div class="duel-lb-card">
+            <div class="lb-card-header">
+              <span>🏆 Canlı Barista Liderlik Tablosu</span>
+            </div>
+            <div class="leaderboard-list-container" id="duelTabLbContainer">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 5: 🏠 ANA SAYFA (HOME HUB DASHBOARD MATCHING USER MOCKUP) -->
+      <section class="screen-view" id="screenHome">
+        <div class="home-screen-container">
+
+          <!-- 1. Top Welcome Banner Notification Toast -->
+          <div class="home-toast-banner" id="homeToastBanner">
+            <span class="toast-icon">☕</span>
+            <div class="toast-text">
+              <strong>🔑 GİRİŞ BAŞARILI!</strong>
+              <small>Hoş geldin <span id="toastUsername">Tuğçe Molla</span>! ☕</small>
+            </div>
+            <button class="toast-close-btn" onclick="document.getElementById('homeToastBanner').style.display='none'">✕</button>
+          </div>
+
+          <!-- 2. Player Profile & Currency Header Bar -->
+          <div class="home-profile-bar">
+            <div class="profile-left">
+              <span class="profile-avatar" id="homeAvatar">👩‍🍳</span>
+              <div class="profile-meta">
+                <strong class="profile-name" id="homeUsername">Tuğçe Molla</strong>
+                <span class="profile-sub" id="homeUserTitle">Seviye 1 Barista</span>
+                <div class="xp-progress-track">
+                  <div class="xp-progress-fill" style="width: 45%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="profile-right">
+              <div class="stat-pill">
+                <span class="pill-lbl">🪙 Coin</span>
+                <strong class="pill-val" id="homeCoinVal">1250</strong>
+              </div>
+              <div class="stat-pill">
+                <span class="pill-lbl">🏆 En Yüksek</span>
+                <strong class="pill-val" id="homeHighScoreVal">0</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Günlük Görev (Daily Quest Bar) -->
+          <div class="daily-quest-card">
+            <div class="quest-header-row">
+              <span class="quest-title-tag">GÜNLÜK GÖREV</span>
+              <span class="quest-reward-badge">+100 🪙</span>
+            </div>
+            <div class="quest-body">
+              <span class="quest-desc">3 Ev Siparişi Tamamla (0/3)</span>
+              <div class="quest-progress-track">
+                <div class="quest-progress-fill" style="width: 20%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. 2x2 Feature Cards Grid -->
+          <div class="home-features-grid">
+            <!-- Card 1: Bulmaca Görevi -->
+            <div class="feature-card" id="btnFeaturePuzzle">
+              <span class="f-icon">🧩</span>
+              <div class="f-info">
+                <h4>Bulmaca Görevi</h4>
+                <p>Ev siparişlerini sınırlı hamlede tamamla.</p>
+              </div>
+            </div>
+
+            <!-- Card 2: Rush Hour -->
+            <div class="feature-card" id="btnFeatureRush">
+              <span class="f-icon">⏱️</span>
+              <div class="f-info">
+                <h4>Rush Hour</h4>
+                <p>60 saniyelik zaman yarışında kahveleri demlere!</p>
+              </div>
+            </div>
+
+            <!-- Card 3: Düello -->
+            <div class="feature-card" id="btnFeatureDuel">
+              <span class="f-icon">⚔️</span>
+              <div class="f-info">
+                <h4>1v1 Düello ⚔️</h4>
+                <p>Online oyuncularla canlı skor yarışına gir!</p>
+              </div>
+            </div>
+
+            <!-- Card 4: Günlük Çark -->
+            <div class="feature-card" id="btnFeatureWheel">
+              <span class="f-icon">🎡</span>
+              <div class="f-info">
+                <h4>Günlük Çark</h4>
+                <p>Çarkı çevir, sürpriz Coin ve Yıldız ödülleri kazan!</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Big Full-Width Action Button -->
+          <button class="btn-action-gold btn-home-start-game" id="btnHomeStartGame">🎮 OYUNA BAŞLA</button>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav" id="bottomNav">
+      <button class="nav-tab active" id="tabHome" data-target="screenHome">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Ana Sayfa</span>
+      </button>
+      <button class="nav-tab" id="tabCafe" data-target="screenCafe">
+        <span class="nav-icon">✈️</span>
+        <span class="nav-label">Kahve Turu</span>
+      </button>
+      <button class="nav-tab" id="tabMap" data-target="screenMap">
+        <span class="nav-icon">🗺️</span>
+        <span class="nav-label">Harita</span>
+      </button>
+      <button class="nav-tab" id="tabDuel" data-target="screenDuel">
+        <span class="nav-icon">⚔️</span>
+        <span class="nav-label">Düello</span>
+      </button>
+      <button class="nav-tab nav-tab-play" id="tabPlay" data-target="screenGame">
+        <span class="nav-icon">▶️</span>
+        <span class="nav-label">Oyna</span>
+      </button>
+    </nav>
+
+    <!-- MODAL 0: SEVİYE ÖNİZLEME MODALI -->
+    <div class="modal-overlay" id="modalLevelPreview">
+      <div class="level-preview-card">
+        <div class="l-preview-header">
+          <span class="l-preview-icon" id="previewRegionIcon">☕</span>
+          <div>
+            <h3 id="previewLevelTitle">Seviye 1</h3>
+            <small id="previewRegionName">Eski Kafe Bölgesi</small>
+          </div>
+          <button class="close-modal-btn" id="btnCloseLevelPreview">✕</button>
+        </div>
+
+        <div class="l-preview-body">
+          <div class="preview-goals-box">
+            <h4>Bölüm Sipariş Hedefleri</h4>
+            <div class="preview-goals-list" id="previewGoalsList">
+              <!-- Dynamic goal icons -->
+            </div>
+          </div>
+
+          <div class="preview-moves-info">
+            <span>Verilen Hamle:</span>
+            <strong id="previewMovesVal">25 Hamle</strong>
+          </div>
+        </div>
+
+        <button class="btn-action-gold btn-play-level" id="btnStartLevelMatch">☕ BÖLÜMÜ OYNA</button>
+      </div>
+    </div>
+
+    <!-- MODAL 1: POS RECEIPT PANEL (ÖZGÜN FİŞ GÖRÜNÜMLÜ BÖLÜM SONU EKRANI) -->
+    <div class="modal-overlay" id="modalPosReceipt">
+      <div class="receipt-wrapper">
+        <div class="printer-slot">
+          <div class="printer-light"></div>
+          <span class="printer-text">COFFEE MATCH POS TERMINAL #042</span>
+        </div>
+
+        <div class="pos-receipt" id="posReceiptContent">
+          <div class="receipt-header">
+            <div class="receipt-logo">☕ COFFEE MATCH ☕</div>
+            <div class="receipt-address">Büyükbaba Mirası Kahve Caddesi No:100</div>
+            <div class="receipt-divider">--------------------------------</div>
+            
+            <h2 class="receipt-status-title" id="receiptStatusTitle">Sipariş Başarıyla Teslim Edildi</h2>
+            <div class="receipt-date" id="receiptDate">Tarih: 07.08.2026 | Fiş No: #1042</div>
+          </div>
+
+          <div class="receipt-divider">--------------------------------</div>
+
+          <div class="receipt-items" id="receiptItems">
+            <!-- Dynamic order checklist items -->
+          </div>
+
+          <div class="receipt-divider">--------------------------------</div>
+
+          <div class="receipt-totals">
+            <div class="receipt-row highlight-row">
+              <span>Kazanılan Çekirdek:</span>
+              <div class="receipt-beans" id="receiptBeans">
+                <span class="bean-icon">🫘</span>
+                <span class="bean-icon">🫘</span>
+                <span class="bean-icon">🫘</span>
+              </div>
+            </div>
+
+            <div class="receipt-row">
+              <span>Coin Ödülü:</span>
+              <strong id="receiptCoinBase">+250 🪙</strong>
+            </div>
+
+            <div class="receipt-row" id="receiptMovesBonusRow">
+              <span>Bonus (Hamle):</span>
+              <strong id="receiptCoinBonus">+50 🪙</strong>
+            </div>
+
+            <div class="receipt-row total-row">
+              <span>Toplam Coin:</span>
+              <strong class="total-coin-val" id="receiptCoinTotal">0 🪙</strong>
+            </div>
+          </div>
+
+          <div class="receipt-divider">--------------------------------</div>
+
+          <div class="receipt-footer">
+            <p class="footer-msg" id="receiptFooterMsg">Tekrar Bekleriz Barista ☕</p>
+            <div class="barcode">||| | |||| | ||||| ||| ||</div>
+          </div>
+
+          <div class="receipt-jagged-edge"></div>
+        </div>
+
+        <div class="receipt-actions" id="receiptActions">
+          <button class="btn-receipt secondary" id="btnReceiptHome">🏠 Kafeme Git</button>
+          <button class="btn-receipt primary" id="btnReceiptNext">➡ Sonraki Sipariş</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 2: CAFE RENOVATION SELECTION MODAL (3 DESIGN OPTIONS) -->
+    <div class="modal-overlay" id="modalDesignSelect">
+      <div class="design-modal-card">
+        <div class="d-modal-header">
+          <h3 id="designModalTitle">Masa Seçimi</h3>
+          <p id="designModalSub">Kafenin havasını değiştirecek tasarımı seç! (Maliyet: 1 🫘)</p>
+          <button class="close-modal-btn" id="btnCloseDesignModal">✕</button>
+        </div>
+
+        <div class="design-options-grid" id="designOptionsGrid">
+          <!-- 3 Design Cards rendered by JS -->
+        </div>
+
+        <button class="btn-action-gold" id="btnConfirmDesign" disabled>Tasarımı Uygula</button>
+      </div>
+    </div>
+
+    <!-- MODAL 3: DIRECT OBJECT TOUCH UPGRADE POPUP CARD -->
+    <div class="modal-overlay" id="modalObjectCard">
+      <div class="object-touch-card">
+        <div class="o-card-icon" id="objCardIcon">🪑</div>
+        <div class="o-card-info">
+          <h3 id="objCardTitle">Masa Takımı</h3>
+          <span class="o-card-level" id="objCardLevel">Seviye 1 (Başlangıç)</span>
+          <p id="objCardDesc">Kafedeki masaları yenileyerek daha çok müşteri çek!</p>
+        </div>
+        <button class="btn-action-gold" id="btnObjUpgrade">Yükselt 🫘 2</button>
+        <button class="close-modal-btn" id="btnCloseObjCard">✕</button>
+      </div>
+    </div>
+
+    <!-- MODAL 4: AREA UNLOCK CELEBRATION MODAL -->
+    <div class="modal-overlay" id="modalAreaUnlock">
+      <div class="area-unlock-card">
+        <div class="area-unlock-icon" id="areaUnlockIcon">🌿</div>
+        <h2>TEBRİKLER BARİSTA!</h2>
+        <h3 id="areaUnlockName">YENİ ALAN: BAHÇE AÇILDI!</h3>
+        <p id="areaUnlockDesc">Taze açık hava bahçesini yeni masalar ve çiçeklerle süslemeye hazır ol!</p>
+        <button class="btn-action-gold" id="btnAreaUnlockContinue">Keşfetmeye Başla ➔</button>
+      </div>
+    </div>
+
+    <!-- MODAL 5: STORY & CHARACTER DIALOGUE MODAL -->
+    <div class="modal-overlay" id="modalDialogue">
+      <div class="dialogue-card">
+        <div class="char-portrait" id="dialoguePortrait">👨‍🍳</div>
+        <div class="dialogue-content">
+          <h4 class="char-name" id="dialogueCharName">Büyükbaba Selim</h4>
+          <p class="dialogue-text" id="dialogueText">Depodaki dolabı açmamız gerekiyor evlat! İçinde eski espresso tarifleri var.</p>
+          <button class="btn-action-gold" id="btnDialogueNext">Devam Et ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 6-A: 📝 BARİSTA KAYIT & HESAP OLUŞTURMA MODALI -->
+    <div class="modal-overlay" id="modalRegister">
+      <div class="account-card">
+        <button type="button" class="close-modal-btn" id="btnCloseRegisterModal" onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('modalRegister').classList.remove('active');">✕</button>
+        
+        <div class="account-header">
+          <h3>📝 Barista Kayıt Ol / Giriş Yap</h3>
+        </div>
+
+        <form class="auth-form" id="formAuthRegister" onsubmit="event.preventDefault(); window.coffeeMatchApp ? window.coffeeMatchApp.handleRegisterSubmit() : document.getElementById('modalRegister').classList.remove('active');">
+          <div class="form-group">
+            <label>Barista İkonunu Seç</label>
+            <div class="avatar-select-grid" id="regAvatarSelectGrid">
+              <span class="avatar-option selected" data-avatar="👩‍🍳">👩‍🍳</span>
+              <span class="avatar-option" data-avatar="👨‍🍳">👨‍🍳</span>
+              <span class="avatar-option" data-avatar="☕">☕</span>
+              <span class="avatar-option" data-avatar="👑">👑</span>
+              <span class="avatar-option" data-avatar="🦊">🦊</span>
+              <span class="avatar-option" data-avatar="🐱">🐱</span>
+              <span class="avatar-option" data-avatar="🐻">🐻</span>
+              <span class="avatar-option" data-avatar="🧙‍♂️">🧙‍♂️</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Kullanıcı Adı / Barista İsmi</label>
+            <input type="text" id="regInputUsername" placeholder="Örn: Barista_Tuğçe" required>
+          </div>
+          <div class="form-group">
+            <label>E-posta Adresi</label>
+            <input type="email" id="regInputEmail" placeholder="ornek@coffeematch.com" required>
+          </div>
+          <div class="form-group">
+            <label>Şifre</label>
+            <input type="password" id="regInputPassword" placeholder="••••••••" required>
+          </div>
+          <div class="auth-status" id="regAuthStatus"></div>
+          <button type="submit" class="btn-action-gold" id="btnSubmitRegister">📝 KAYDOL &amp; KAFEYE GİRİŞ YAP</button>
+        </form>
+
+        <div class="backend-connection-info">
+          <small>☕ Güvenli Barista Hesabı Kaydı</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 6-B: 👨‍🍳 BARİSTA PROFİL & İSTATİSTİK KARTI MODALI -->
+    <div class="modal-overlay" id="modalAccount">
+      <div class="account-card profile-stats-card">
+        <button type="button" class="close-modal-btn" id="btnCloseAccountModal" onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('modalAccount').classList.remove('active');">✕</button>
+        
+        <!-- Top Profile Banner -->
+        <div class="profile-header-banner">
+          <div class="profile-avatar-circle" id="profileAvatarDisplay">👩‍🍳</div>
+          <div class="profile-info-text">
+            <h3 id="profileUsernameDisplay">Efsane Barista</h3>
+            <span class="profile-title-badge" id="profileTitleBadge">👑 Altın Kahve İmparatoru</span>
+          </div>
+        </div>
+
+        <!-- Avatar Quick Change Row -->
+        <div class="profile-section-box">
+          <span class="profile-section-label">Barista İkonunu Değiştir</span>
+          <div class="avatar-select-grid" id="avatarSelectGrid">
+            <span class="avatar-option selected" data-avatar="👩‍🍳">👩‍🍳</span>
+            <span class="avatar-option" data-avatar="👨‍🍳">👨‍🍳</span>
+            <span class="avatar-option" data-avatar="☕">☕</span>
+            <span class="avatar-option" data-avatar="👑">👑</span>
+            <span class="avatar-option" data-avatar="🦊">🦊</span>
+            <span class="avatar-option" data-avatar="🐱">🐱</span>
+            <span class="avatar-option" data-avatar="🐻">🐻</span>
+            <span class="avatar-option" data-avatar="🧙‍♂️">🧙‍♂️</span>
+          </div>
+        </div>
+
+        <!-- Player Statistics Grid -->
+        <div class="profile-stats-grid">
+          <div class="p-stat-box">
+            <span class="p-stat-icon">🪙</span>
+            <div class="p-stat-info">
+              <span class="p-stat-label">Altın Coin</span>
+              <strong class="p-stat-val" id="profileCoinsVal">50,000</strong>
+            </div>
+          </div>
+
+          <div class="p-stat-box">
+            <span class="p-stat-icon">🫘</span>
+            <div class="p-stat-info">
+              <span class="p-stat-label">Kahve Çekirdeği</span>
+              <strong class="p-stat-val" id="profileBeansVal">99</strong>
+            </div>
+          </div>
+
+          <div class="p-stat-box">
+            <span class="p-stat-icon">🏆</span>
+            <div class="p-stat-info">
+              <span class="p-stat-label">Dünya Turu</span>
+              <strong class="p-stat-val" id="profileTourVal">6/6 Damga</strong>
+            </div>
+          </div>
+
+          <div class="p-stat-box">
+            <span class="p-stat-icon">⚔️</span>
+            <div class="p-stat-info">
+              <span class="p-stat-label">Düello Zaferleri</span>
+              <strong class="p-stat-val" id="profileDuelsVal">48 Zafer (%92)</strong>
+            </div>
+          </div>
+
+          <div class="p-stat-box">
+            <span class="p-stat-icon">☕</span>
+            <div class="p-stat-info">
+              <span class="p-stat-label">Demlenen Kahve</span>
+              <strong class="p-stat-val" id="profileCupsVal">1,250 Fincan</strong>
+            </div>
+          </div>
+
+          <div class="p-stat-box">
+            <span class="p-stat-icon">⭐</span>
+            <div class="p-stat-info">
+              <span class="p-stat-label">Toplam Yıldız</span>
+              <strong class="p-stat-val" id="profileStarsVal">135 ⭐</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save / Confirm Action Button -->
+        <button class="btn-action-gold" id="btnSaveProfile" onclick="document.getElementById('modalAccount').classList.remove('active')">✨ PROFİLİ KAYDET &amp; KAPAT</button>
+
+        <div class="backend-connection-info">
+          <small>☕ VIP Barista Üye Profili</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 7: POS THERMAL RECEIPT END OF LEVEL MODAL -->
+    <div class="modal-overlay" id="modalReceipt">
+      <canvas id="receiptConfettiCanvas" class="receipt-confetti-canvas"></canvas>
+      <div class="pos-printer-container">
+        <!-- 3D Coffee Machine Body Frame -->
+        <div class="pos-machine-body">
+          <!-- Metallic Top Header Slot -->
+          <div class="pos-printer-head">
+            <span class="pos-brand-tag">COFFEE MATCH POS</span>
+            <span class="pos-status-led"></span>
+            <div class="pos-slot-mouth"></div>
+          </div>
+          <!-- Thermal Paper Feeder -->
+          <div class="pos-paper-feeder" id="posPaperFeeder">
+            <div class="receipt-card" id="receiptCard">
+              <!-- Thermal Receipt JS Populated Content -->
+            </div>
+          </div>
+          <!-- Bottom Metallic Receipt Tray -->
+          <div class="pos-paper-tray"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 8: 🏆 CANLI LİDERLİK TABLOSU MODAL -->
+    <div class="modal-overlay" id="modalLeaderboard">
+      <div class="account-card design-modal-card">
+        <button class="btn-close-modal" onclick="document.getElementById('modalLeaderboard').classList.remove('active')">✕</button>
+        
+        <div class="modal-design-header">
+          <div class="modal-header-icon">🏆</div>
+          <div class="modal-header-text">
+            <h3>Dünya Barista Sıralaması</h3>
+            <p>Kayıtlı oyuncular arasındaki en yüksek seviye &amp; skor yarışı!</p>
+          </div>
+        </div>
+
+        <div class="leaderboard-list-container" id="leaderboardListContainer">
+          <!-- Dynamic Leaderboard Items -->
+        </div>
+
+        <div class="leaderboard-footer">
+          <button class="btn-action-gold" id="btnStartOnlineDuel">⚔️ 1v1 Düello Başlat (+100 🪙)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 9: ⚔️ 1v1 BARİSTA DÜELLOSU MODAL -->
+    <div class="modal-overlay" id="modalDuel">
+      <div class="account-card design-modal-card">
+        <button class="btn-close-modal" onclick="document.getElementById('modalDuel').classList.remove('active')">✕</button>
+        
+        <div class="modal-design-header">
+          <div class="modal-header-icon">⚔️</div>
+          <div class="modal-header-text">
+            <h3>1v1 Online Barista Düellosu</h3>
+            <p>60 Saniyelik eş zamanlı skor yarışında rakibini mağlup et!</p>
+          </div>
+        </div>
+
+        <div class="duel-match-box">
+          <div class="duel-player-card">
+            <span class="d-avatar" id="myDuelAvatar">👩‍🍳</span>
+            <strong class="d-name" id="myDuelName">Tuğçe</strong>
+            <span class="d-badge">Sen</span>
+          </div>
+
+          <div class="duel-vs-badge">VS</div>
+
+          <div class="duel-player-card">
+            <span class="d-avatar" id="oppDuelAvatar">👨‍🍳</span>
+            <strong class="d-name" id="oppDuelName">Barista_Ahmet</strong>
+            <span class="d-badge">Çevrimiçi Rakip</span>
+          </div>
+        </div>
+
+        <div class="duel-info-pill">
+          🏆 Ödül: <strong>+100 🪙 Coin</strong> &amp; <strong>+5 🫘 Çekirdek</strong>
+        </div>
+
+        <button class="btn-action-gold" id="btnStartDuelMatch">🚀 DÜELLOYU BAŞLAT!</button>
+      </div>
+    </div>
+
+    <!-- MODAL 8: 🎡 GÜNLÜK ŞANS ÇARKI MODALI (INTERACTIVE SPINNING WHEEL) -->
+    <div class="modal-overlay" id="modalDailyWheel">
+      <div class="wheel-modal-card">
+        <button class="close-modal-btn" id="btnCloseDailyWheel" onclick="document.getElementById('modalDailyWheel').classList.remove('active')">✕</button>
+        <div class="wheel-header">
+          <h2>🎡 Günlük Barista Şans Çarkı</h2>
+          <p>Her gün çevir, sürpriz Coin, Çekirdek ve Booster'lar kazan!</p>
+        </div>
+
+        <!-- Wheel Spinner Container -->
+        <div class="wheel-spinner-wrapper">
+          <div class="wheel-pointer">▼</div>
+          <canvas id="wheelCanvas" width="280" height="280"></canvas>
+          <div class="wheel-center-knob">☕</div>
+        </div>
+
+        <!-- Spin Action Button -->
+        <button class="btn-action-gold btn-spin-wheel" id="btnSpinWheel">🎡 ÜCRETSİZ ÇEVİR!</button>
+      </div>
+    </div>
+
+    <!-- MODAL 9: 🎁 GÖRKEMLİ ÖZEL ÖDÜL KAZANMA MODALI (CUSTOM REWARD POPUP) -->
+    <div class="modal-overlay" id="modalCustomReward">
+      <div class="reward-modal-card">
+        <div class="reward-icon-circle" id="rewardModalIcon">🎁</div>
+        <h2 class="reward-modal-title" id="rewardModalTitle">🎉 TEBRİKLER!</h2>
+        <p class="reward-modal-text" id="rewardModalText">Günlük Çarktan 500 🪙 SUPER JACKPOT KAZANDIN!</p>
+        <span class="reward-modal-sub" id="rewardModalSub">Ödülünüz Hesabınıza Eklendi! ✨</span>
+        <button class="btn-action-gold btn-reward-confirm" id="btnRewardConfirm">🏠 ANA SAYFAYA DÖN</button>
+      </div>
+    </div>
+
+    <!-- MODAL 10: 🧩 GÜNÜN STANDALONE BARİSTA TARİF BULMACASI MODALI -->
+    <div class="modal-overlay" id="modalRecipePuzzle">
+      <div class="puzzle-modal-card">
+        <button class="close-modal-btn" id="btnCloseRecipePuzzle" onclick="document.getElementById('modalRecipePuzzle').classList.remove('active')">✕</button>
+        
+        <div class="puzzle-header">
+          <h2>🧩 Günün Barista Bulmacası</h2>
+          <p>Müşterinin istediği gizemli kahve tarifini sırasıyla hazırla!</p>
+        </div>
+
+        <!-- Recipe Clue Box -->
+        <div class="recipe-clue-card">
+          <div class="clue-title">📋 Sipariş: <strong>Iced Caramel Macchiato</strong></div>
+          <div class="clue-hint">💡 İpucu: 1. Soğuk (🧊), 2. Sütlü (🥛), 3. Kahveli (☕), 4. Tatlı (🍯)</div>
+        </div>
+
+        <!-- Mixing Cup Target Display -->
+        <div class="mixing-cup-wrapper">
+          <div class="glass-cup" id="glassCup">
+            <div class="cup-layer-list" id="cupLayerList">
+              <span class="empty-cup-hint">Malzemelere dokunarak bardağı doldur!</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ingredient Selection Buttons -->
+        <div class="ingredients-grid">
+          <button class="ingredient-btn" data-id="ice">🧊 Buz</button>
+          <button class="ingredient-btn" data-id="milk">🥛 Süt</button>
+          <button class="ingredient-btn" data-id="espresso">☕ Espresso</button>
+          <button class="ingredient-btn" data-id="caramel">🍯 Karamel</button>
+          <button class="ingredient-btn" data-id="chocolate">🍫 Çikolata</button>
+          <button class="ingredient-btn" data-id="syrup">🍓 Şurup</button>
+        </div>
+
+        <!-- Action Controls -->
+        <div class="puzzle-actions-row">
+          <button class="btn-secondary" id="btnResetRecipe">🗑️ Sıfırla</button>
+          <button class="btn-action-gold" id="btnSubmitRecipe">✨ TARİFİ SUN!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 11: ☕ DÜNYA ŞEHİRLERİ ÖZEL KAHVE DEMLEME MODALI (MASTER BARISTA EDITION) -->
+    <div class="modal-overlay" id="modalCountryBrew">
+      <div class="puzzle-modal-card master-brew-card">
+        <button class="close-modal-btn" id="btnCloseCountryBrew" onclick="document.getElementById('modalCountryBrew').classList.remove('active')">✕</button>
+        
+        <div class="puzzle-header">
+          <span class="master-barista-badge">👑 MASTER BARISTA SEREMONİSİ</span>
+          <h2 id="brewModalTitle">🇮🇹 Napoli Ristretto Seremonisi</h2>
+          <p id="brewModalSub">Bilet aldığın şehrin meşhur kahvesini sırasıyla ve doğru ısıda demle!</p>
+        </div>
+
+        <div class="recipe-clue-card">
+          <div class="clue-header-row">
+            <div class="clue-title" id="brewOrderTitle">📋 Tarif: <strong>Napoli Ristretto</strong></div>
+            <div class="brew-step-dots" id="brewStepDots">
+              <span class="dot active">1</span>
+              <span class="dot">2</span>
+              <span class="dot">3</span>
+              <span class="dot">4</span>
+            </div>
+          </div>
+
+          <!-- Flavor Profile Badges -->
+          <div class="brew-flavor-profile" id="brewFlavorProfile">
+            <span class="flavor-badge">☕ Yoğun Gövde</span>
+            <span class="flavor-badge">🍯 Tatlı Aroma</span>
+            <span class="flavor-badge">✨ Kadife Doku</span>
+          </div>
+
+          <!-- Mystery Hidden Recipe & Reveal Toggle -->
+          <div class="brew-hint-box" id="brewHintBox">
+            <div class="hidden-hint-cover" id="brewHintCover">
+              <span>🔒 GİZEMLİ ŞEF TARİFİ</span>
+              <button class="btn-reveal-hint" id="btnRevealHint">👁️ İpucunu Göster (2X Bonusu Kaybedersin)</button>
+            </div>
+            <div class="clue-hint riddle-text" id="brewOrderHint" style="display: none;">💡 Hikaye: ...</div>
+          </div>
+        </div>
+
+        <!-- 3D Animated Glass Cup & Liquid Layer Filling Area -->
+        <div class="mixing-cup-wrapper">
+          <div class="steam-cup-particles" id="cupSteamParticles">
+            <span class="cup-steam-puff p1">♨️</span>
+            <span class="cup-steam-puff p2">☁️</span>
+            <span class="cup-steam-puff p3">♨️</span>
+          </div>
+
+          <div class="glass-cup" id="brewGlassCup">
+            <!-- Animated Liquid Layer Filling Container -->
+            <div class="glass-cup-fluid" id="brewLiquidFluid"></div>
+            
+            <div class="cup-layer-list" id="brewCupLayerList">
+              <span class="empty-cup-hint">Malzemelere dokunarak bardağı doldur!</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Master Barista Pressure & Heat Meter Gauge -->
+        <div class="brew-pressure-meter-box" id="brewPressureMeterBox">
+          <div class="meter-label-row">
+            <span>🌡️ Demleme Isısı &amp; Basıncı:</span>
+            <strong id="brewPressureValue">85% (Optimum)</strong>
+          </div>
+          <div class="meter-track">
+            <div class="meter-target-zone" style="left: 62%; width: 33%;">
+              <small>🎯 MÜKEMMEL ISIL</small>
+            </div>
+            <div class="meter-needle" id="brewPressureNeedle" style="left: 0%;"></div>
+          </div>
+          <button class="btn-stop-pressure" id="btnStopPressure">🎯 ISIDA SABİTLE!</button>
+        </div>
+
+        <div class="ingredients-grid" id="brewIngredientsGrid">
+          <button class="ingredient-btn" data-id="grind">🫘 Çekirdek Öğüt</button>
+          <button class="ingredient-btn" data-id="water">💧 Sıcak Su</button>
+          <button class="ingredient-btn" data-id="espresso">☕ Espresso</button>
+          <button class="ingredient-btn" data-id="milk">🥛 Süt</button>
+          <button class="ingredient-btn" data-id="crema">✨ Krema</button>
+          <button class="ingredient-btn" data-id="foam">☁️ Süt Köpüğü</button>
+          <button class="ingredient-btn" data-id="caramel">🍯 Karamel</button>
+          <button class="ingredient-btn" data-id="cocoa">🍫 Çikolata</button>
+        </div>
+
+        <div class="puzzle-actions-row">
+          <button class="btn-secondary" id="btnResetBrew">🗑️ Bardağı Temizle</button>
+          <button class="btn-action-gold" id="btnSubmitBrew">☕ KAHVEYİ DEMLE &amp; İÇ!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- OVERLAY 13: ⚡ FULLSCREEN THUNDER STROBE FLASH OVERLAY -->
+    <div class="lightning-screen-strobe" id="lightningScreenStrobe">
+      <div class="giant-thunder-bolt">⚡</div>
+    </div>
+
+    <!-- OVERLAY 12: ⏱️ 3-2-1-GO! GERİ SAYIM ANİMASYON KATMANI (RUSH HOUR & DÜELLO) -->
+    <div class="countdown-overlay" id="countdownOverlay">
+      <div class="countdown-number" id="countdownNumber">3</div>
+    </div>
+
+    <!-- OVERLAY 14: ✈️ 3D PASAPORT DAMGALAMA ANİMASYON KATMANI -->
+    <div class="stamp-anim-overlay" id="stampAnimOverlay">
+      <div class="passport-stamp-card">
+        <span class="seal-flag" id="sealFlag">🇪🇹</span>
+        <div class="seal-ring">
+          <span class="seal-title" id="sealTitle">ETİYOPYA</span>
+          <span class="seal-sub">APPROVED PASSPORT STAMP</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OVERLAY 15: ✈️ 3D LÜKS VİP UÇUŞ BİLETİ VE PASAPORT DAMGA ANİMASYON KATMANI -->
+    <div class="flight-boarding-overlay" id="flightBoardingOverlay">
+      <div class="boarding-pass-card luxury-3d-ticket" id="luxury3DTicketCard">
+        <div class="boarding-header-stripe">
+          <div class="airline-brand">
+            <span class="brand-icon">✈️</span>
+            <strong>COFFEE AIRLINES VIP</strong>
+          </div>
+          <span class="flight-status-badge">🟢 PASAPORT ONAYLANDI</span>
+        </div>
+
+        <div class="boarding-body-content">
+          <!-- 3D Flight Route & Airport Codes -->
+          <div class="flight-route-display">
+            <div class="route-city">
+              <span class="city-code">IST</span>
+              <small>İSTANBUL</small>
+            </div>
+            <div class="route-plane-anim">
+              <span class="flight-dotted-line"></span>
+              <span class="swooping-plane-icon">✈️</span>
+            </div>
+            <div class="route-city">
+              <span class="city-code" id="boardCityCode">ETH</span>
+              <small id="boardCityName">HARAR</small>
+            </div>
+          </div>
+
+          <div class="boarding-dest-box">
+            <span class="dest-flag" id="boardFlag">🇪🇹</span>
+            <h2 class="dest-name" id="boardDestName">ETİYOPYA • KAFFA VADİSİ</h2>
+            <p class="dest-subtext">VİP First Class Havayolu İle Kahve Rotası Keşfi!</p>
+          </div>
+
+          <!-- Dynamic Ticket Meta Grid (Gate, Seat, Class) -->
+          <div class="ticket-meta-grid">
+            <div class="meta-item">
+              <small>KAPI</small>
+              <strong>A-07</strong>
+            </div>
+            <div class="meta-item">
+              <small>KOLTUK</small>
+              <strong>1A (VIP)</strong>
+            </div>
+            <div class="meta-item">
+              <small>SINIF</small>
+              <strong>FIRST CLASS</strong>
+            </div>
+          </div>
+
+          <div class="boarding-reward-strip">
+            <span>🎁 BİLET BONUSU: <strong id="boardRewardText">+1,000 🪙 COIN &amp; 🫘 ÇEKİRDEK</strong></span>
+          </div>
+
+          <!-- 3D Approved Rubber Stamp Overlay Seal -->
+          <div class="stamp-approved-seal" id="stampApprovedSeal">
+            <span class="seal-star">⭐</span>
+            <strong id="sealTitleText">ONAYLANDI</strong>
+            <small>PASSPORT STAMP</small>
+          </div>
+        </div>
+
+        <div class="boarding-footer-barcode">
+          <div class="barcode-lines">||||| | ||||| || |||||| | ||||| |||||||</div>
+          <span>VIP BOARDING PASS • #COFFEE-MATCH-8849</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="src/audio.js?v=270.0" defer></script>
+  <script src="src/particles.js?v=270.0" defer></script>
+  <script src="src/mechanics.js?v=270.0" defer></script>
+  <script src="src/api.js?v=270.0" defer></script>
+  <script src="src/cafe.js?v=270.0" defer></script>
+  <script src="src/map.js?v=270.0" defer></script>
+  <script src="src/board.js?v=290.0" defer></script>
+  <script src="src/receipt.js?v=280.0"></script>
+  <script src="src/game.js?v=270.0" defer></script>
+</body>
+</html>
