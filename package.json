@@ -1,0 +1,27 @@
+{
+  "name": "coffee-match-game",
+  "version": "1.0.0",
+  "description": "Royal Match & Candy Crush standartlarında tasarlanmış, taze çekilmiş kahve ve tatlı temalı **AAA Match-3 Mobil & Web Bulmaca Oyunu**!",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tugcemolla/coffee-match-game.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/tugcemolla/coffee-match-game/issues"
+  },
+  "homepage": "https://github.com/tugcemolla/coffee-match-game#readme",
+  "dependencies": {
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/ios": "^8.5.2"
+  }
+}
