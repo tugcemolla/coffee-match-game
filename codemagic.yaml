@@ -9,6 +9,11 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.tugcemolla.coffeematch
+        provisioning_profiles:
+          - Coffee Match Profile
+          - Coffee Match App Store
+        certificates:
+          - Coffee Match Distribution
       node: 22.11.0
       cocoapods: default
     scripts:
