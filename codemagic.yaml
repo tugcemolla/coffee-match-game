@@ -6,12 +6,6 @@ workflows:
     integrations:
       app_store_connect: Codemagic Key
     environment:
-      ios_signing:
-        provisioning_profiles:
-          - Coffee Match App Store
-          - Coffee_Match_App_Store
-        certificates:
-          - Coffee Match Distribution
       node: 22.11.0
       cocoapods: default
     scripts:
@@ -21,6 +15,14 @@ workflows:
       - name: Capacitor Sync
         script: |
           npx cap sync ios
+      - name: Set up keychain and import certificate
+        script: |
+          keychain initialize
+          keychain add-certificates --certificate ios/ios_distribution.p12 --certificate-password "123456"
+      - name: Install provisioning profile
+        script: |
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          cp ios/Coffee_Match_App_Store.mobileprovision "$HOME/Library/MobileDevice/Provisioning Profiles/"
       - name: Set up code signing settings on Xcode project
         script: |
           xcode-project use-profiles
