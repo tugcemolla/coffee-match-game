@@ -25,8 +25,12 @@
 
   /* Dimensions */
   --app-max-width: 480px;
-  --header-height: 56px;
-  --nav-height: 64px;
+  --header-height: 52px;
+  --nav-height: 58px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
 
   /* Shadows & Glassmorphism */
   --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -103,15 +107,16 @@ body {
 
 /* Main Mobile Application Outer Frame */
 .mobile-frame {
+  width: 100%;
   width: 100vw;
-  max-width: var(--app-max-width);
+  max-width: 100%;
   height: 100%;
   height: 100dvh;
-  max-height: 920px;
+  max-height: 100dvh;
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-soft);
+  border: none;
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -119,23 +124,32 @@ body {
   border-radius: 0;
 }
 
-@media (min-width: 500px) {
+@media (min-width: 600px) {
   .mobile-frame {
+    max-width: var(--app-max-width);
     height: 95vh;
+    max-height: 920px;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-soft);
     border-radius: 32px;
   }
 }
 
 /* TOP BAR (Currencies & Profile) */
 .top-bar {
-  height: var(--header-height);
+  height: calc(var(--header-height) + env(safe-area-inset-top, 0px));
+  min-height: calc(var(--header-height) + env(safe-area-inset-top, 0px));
   background: linear-gradient(180deg, #3d2719 0%, #2a1a10 100%);
   border-bottom: 2px solid var(--accent-gold);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 12px;
-  z-index: 10;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: 0;
+  padding-left: max(12px, env(safe-area-inset-left, 0px));
+  padding-right: max(12px, env(safe-area-inset-right, 0px));
+  box-sizing: border-box;
+  z-index: 100;
 }
 
 .user-avatar {
@@ -1633,8 +1647,8 @@ body {
 
 /* BOTTOM NAVIGATION BAR */
 .bottom-nav {
-  height: var(--nav-height);
-  min-height: var(--nav-height);
+  height: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
+  min-height: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(0deg, #23160e 0%, #342013 100%);
   border-top: 2px solid var(--accent-gold);
   display: flex;
@@ -1642,7 +1656,11 @@ body {
   align-items: center;
   z-index: 900 !important;
   flex-shrink: 0 !important;
-  padding-bottom: max(0px, env(safe-area-inset-bottom));
+  padding-top: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: max(8px, env(safe-area-inset-left, 0px));
+  padding-right: max(8px, env(safe-area-inset-right, 0px));
+  box-sizing: border-box;
 }
 
 #bottomNav.hide-nav,
@@ -2955,13 +2973,14 @@ body {
 .home-screen-container {
   width: 100%;
   height: 100%;
-  padding: 12px 10px;
+  padding: 8px 10px 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   background: radial-gradient(circle at 50% 30%, #221209 0%, #140b07 100%);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
 .home-screen-container::-webkit-scrollbar { display: none; }
